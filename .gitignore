@@ -5,6 +5,11 @@
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
+# Hide Firebase config
+google-services.json
+gradle.properties
+.env
+
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
