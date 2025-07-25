@@ -1,35 +1,56 @@
 package com.example.firebaseauthentication.Screens
 
+import android.widget.Space
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.Unspecified
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.rememberNavBackStack
 import com.example.firebaseauthentication.AuthViewModel
 import com.example.firebaseauthentication.Navigations.Routes
+import com.example.firebaseauthentication.R
 
 
 @Composable
 fun LoginScreen(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
-
 
     Scaffold(
         modifier = Modifier
@@ -38,74 +59,350 @@ fun LoginScreen(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-            ) {
-            val emailText = remember { mutableStateOf("") }
-            TextField(
-                value = emailText.value,
-                onValueChange = { emailText.value = it },
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .fillMaxWidth(),
+            var email by remember { mutableStateOf("") }
+
+//            Spacer(Modifier.padding(40.dp))
+
+            Text(
+                text = "Welcome",
+                color = Blue,
+                fontSize = 50.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
+
+//            Spacer(Modifier.padding(40.dp))
+            val disaplyName = remember { mutableStateOf("") }
+            OutlinedTextField(
+                value = disaplyName.value,
+                onValueChange = { disaplyName.value = it },
                 placeholder = {
+                    Text("Enter Name...")
+                },
+                label = {
                     Text(
-                        "Enter Email..",
-                        fontSize = 14.sp
+                        text = "Name"
                     )
-                }
+                },
+                shape = RoundedCornerShape(20.dp),
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Email
+                ),
             )
-            Spacer(
-                Modifier
+            Spacer(Modifier.padding(10.dp))
 
-                    .padding(20.dp)
-            )
-            val passward = remember { mutableStateOf("") }
-            TextField(
-                value = passward.value,
-                onValueChange = { passward.value = it },
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .fillMaxWidth(),
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
                 placeholder = {
+                    Text("Enter Email...")
+                },
+                label = {
                     Text(
-                        "Enter Passward..",
-                        fontSize = 14.sp
+                        text = "Email"
                     )
-                }
+                },
+                shape = RoundedCornerShape(20.dp),
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Email
+                ),
             )
+            Spacer(Modifier.padding(10.dp))
+            var passward by remember { mutableStateOf("") }
+
+            var passwardVisibility = remember { mutableStateOf<Boolean>(false) }
+
+            OutlinedTextField(
+                value = passward,
+                onValueChange = { passward = it },
+                placeholder = {
+                    Text("Enter Passward...")
+                },
+                label = {
+                    Text("Passward")
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Password
+                ),
+                trailingIcon = {
+                    if (passwardVisibility.value) {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_visibility_off_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clickable {
+                                    passwardVisibility.value = false
+                                }
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_visibility_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clickable {
+                                    passwardVisibility.value = true
+                                }
+                        )
+                    }
+                },
+                visualTransformation = if (passwardVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
+                shape = RoundedCornerShape(20.dp)
+
+            )
+
+            val reEnterPassward = remember { mutableStateOf("") }
+
+
+            val rePassErrorState = remember { mutableStateOf(false) }
+            Spacer(Modifier.padding(10.dp))
+
+
+
             Spacer(
-                Modifier
-                    .padding(20.dp)
+                modifier = Modifier
+                    .padding(10.dp)
             )
-            val isSucess = viewModel?.isSucess?.collectAsState()?.value
-
-            val context = LocalContext.current
-
-            Button(
-                onClick = {
-                    viewModel?.createUserEmailAndPassward(emailText.value, passward.value)
-
-                }
-            ) {
+            Row {
                 Text(
-                    text = "Sign Up",
-                    fontSize = 20.sp
+                    text = "Already Have an Account? ",
+                    fontSize = 17.sp
+                )
+                Text(
+                    text = "Sign In",
+                    fontSize = 17.sp,
+                    color = Blue
+
+                )
+            }
+            val conedt = LocalContext.current
+
+            Spacer(Modifier.padding(20.dp))
+            OutlinedButton(
+                onClick = {
+                    // TODO viewModel implementation and login
+
+
+                    rePassErrorState.value = true
+                    viewModel?.createUserEmailAndPassward(
+                        email,
+                        passward,
+                        displayName = disaplyName.value
+                    )
+                    navBackStack.add(Routes.HomeScreen)
+                    Toast.makeText(conedt, "Done", Toast.LENGTH_SHORT).show()
+
+                    rePassErrorState.value = false
+                    Toast.makeText(conedt, "Failed", Toast.LENGTH_SHORT).show()
+
+                },
+                border = BorderStroke(4.dp, color = Blue),
+                modifier = Modifier
+                    .width(200.dp)
+            ) {
+                Text("Create Account", fontSize = 20.sp)
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            Row(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                HorizontalDivider(
+                    color = White, modifier = Modifier
+                        .width(140.dp)
+                )
+                Text(" OR ", color = White)
+
+                HorizontalDivider(
+                    color = White, modifier = Modifier
+                        .width(140.dp)
                 )
             }
 
-            if (isSucess == true) {
-                Toast.makeText(context, "Logined Sucessfully", Toast.LENGTH_SHORT).show()
-                navBackStack.add(Routes.HomeScreen)
+            // google and facebook
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
 
-            } else if(isSucess == false) {
-                Toast.makeText(context, "Logined Failed", Toast.LENGTH_SHORT).show()
+                Card(
+                    modifier = Modifier
+                        .width(120.dp)
+                        .clickable {
+                            // TODO social providers onClick
+                        },
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .padding(10.dp)
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.google_logo),
+                            contentDescription = null,
+                            tint = Unspecified,
+                            modifier = Modifier
+                                .size(25.dp)
+                        )
+
+                        Spacer(Modifier.padding(5.dp))
+
+                        Text(
+                            text = "Google",
+                            modifier = Modifier
+                        )
+
+                    }
+                }
+
+                Spacer(Modifier.padding(15.dp))
+
+                Card(
+                    modifier = Modifier
+                        .width(120.dp)
+                        .clickable {
+                            // TODO social providers onClick
+                        },
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .padding(10.dp)
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.facebook_logo),
+                            contentDescription = null,
+                            tint = Unspecified,
+                            modifier = Modifier
+                                .size(25.dp)
+                        )
+
+                        Spacer(Modifier.padding(5.dp))
+
+                        Text(
+                            text = "Facebook",
+                            modifier = Modifier
+                        )
+
+                    }
+                }
             }
+
+            Spacer(Modifier.padding(10.dp))
+            // apple and microsoft
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Card(
+                    modifier = Modifier
+                        .width(120.dp)
+                        .clickable {
+                            // TODO social providers onClick
+                        },
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .padding(10.dp)
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.apple_logo),
+                            contentDescription = null,
+                            tint = Unspecified,
+                            modifier = Modifier
+                                .size(25.dp)
+                        )
+
+                        Spacer(Modifier.padding(5.dp))
+
+                        Text(
+                            text = "Apple",
+                            modifier = Modifier
+                        )
+
+                    }
+                }
+
+                Spacer(Modifier.padding(15.dp))
+
+                Card(
+                    modifier = Modifier
+                        .width(120.dp)
+                        .clickable {
+                            // TODO social providers onClick
+                        },
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .padding(10.dp)
+                    ) {
+
+                        Icon(
+                            painter = painterResource(R.drawable.micorsoft),
+                            contentDescription = null,
+                            tint = Unspecified,
+                            modifier = Modifier
+                                .size(25.dp)
+                        )
+
+                        Spacer(Modifier.padding(5.dp))
+
+                        Text(
+                            text = "Microsoft",
+                            modifier = Modifier
+                        )
+
+                    }
+                }
+            }
+
         }
     }
-
 }
+
+
+
 
