@@ -1,7 +1,7 @@
 package com.example.firebaseauthentication.Screens
 
-import android.widget.Space
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,16 +15,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,7 +49,7 @@ import com.example.firebaseauthentication.R
 
 
 @Composable
-fun LoginScreen(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
+fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 
     Scaffold(
         modifier = Modifier
@@ -65,165 +64,25 @@ fun LoginScreen(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            var email by remember { mutableStateOf("") }
+            var signInButton = remember { mutableStateOf(true) }
 
-//            Spacer(Modifier.padding(40.dp))
+            AnimatedContent(
+                targetState = signInButton.value,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                content = { swtich ->
 
-            Text(
-                text = "Welcome",
-                color = Blue,
-                fontSize = 50.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
-
-//            Spacer(Modifier.padding(40.dp))
-            val disaplyName = remember { mutableStateOf("") }
-            OutlinedTextField(
-                value = disaplyName.value,
-                onValueChange = { disaplyName.value = it },
-                placeholder = {
-                    Text("Enter Name...")
-                },
-                label = {
-                    Text(
-                        text = "Name"
-                    )
-                },
-                shape = RoundedCornerShape(20.dp),
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Email
-                ),
-            )
-            Spacer(Modifier.padding(10.dp))
-
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                placeholder = {
-                    Text("Enter Email...")
-                },
-                label = {
-                    Text(
-                        text = "Email"
-                    )
-                },
-                shape = RoundedCornerShape(20.dp),
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Email
-                ),
-            )
-            Spacer(Modifier.padding(10.dp))
-            var passward by remember { mutableStateOf("") }
-
-            var passwardVisibility = remember { mutableStateOf<Boolean>(false) }
-
-            OutlinedTextField(
-                value = passward,
-                onValueChange = { passward = it },
-                placeholder = {
-                    Text("Enter Passward...")
-                },
-                label = {
-                    Text("Passward")
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Password
-                ),
-                trailingIcon = {
-                    if (passwardVisibility.value) {
-                        Icon(
-                            painter = painterResource(R.drawable.outline_visibility_off_24),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .clickable {
-                                    passwardVisibility.value = false
-                                }
+                    if (swtich) {
+                        CreateAccountEANDP(
+                            viewModel, navBackStack, swtich,
+                            siginInButtonState = signInButton
                         )
                     } else {
-                        Icon(
-                            painter = painterResource(R.drawable.outline_visibility_24),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .clickable {
-                                    passwardVisibility.value = true
-                                }
-                        )
+                        SignInEmailPass(        viewModel, navBackStack, swtich,
+                            siginInButtonState = signInButton)
                     }
-                },
-                visualTransformation = if (passwardVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
-                shape = RoundedCornerShape(20.dp)
-
+                }
             )
-
-            val reEnterPassward = remember { mutableStateOf("") }
-
-
-            val rePassErrorState = remember { mutableStateOf(false) }
-            Spacer(Modifier.padding(10.dp))
-
-
-
-            Spacer(
-                modifier = Modifier
-                    .padding(10.dp)
-            )
-            Row {
-                Text(
-                    text = "Already Have an Account? ",
-                    fontSize = 17.sp
-                )
-                Text(
-                    text = "Sign In",
-                    fontSize = 17.sp,
-                    color = Blue
-
-                )
-            }
-            val conedt = LocalContext.current
-
-            Spacer(Modifier.padding(20.dp))
-            OutlinedButton(
-                onClick = {
-                    // TODO viewModel implementation and login
-
-
-                    rePassErrorState.value = true
-                    viewModel?.createUserEmailAndPassward(
-                        email,
-                        passward,
-                        displayName = disaplyName.value
-                    )
-                    navBackStack.add(Routes.HomeScreen)
-                    Toast.makeText(conedt, "Done", Toast.LENGTH_SHORT).show()
-
-                    rePassErrorState.value = false
-                    Toast.makeText(conedt, "Failed", Toast.LENGTH_SHORT).show()
-
-                },
-                border = BorderStroke(4.dp, color = Blue),
-                modifier = Modifier
-                    .width(200.dp)
-            ) {
-                Text("Create Account", fontSize = 20.sp)
-
-            }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             Row(
@@ -404,5 +263,169 @@ fun LoginScreen(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 }
 
 
+@Composable
+fun CreateAccountEANDP(
+    viewModel: AuthViewModel?,
+    navBackStack: NavBackStack,
+    TextSwitch: Boolean,
+    siginInButtonState: MutableState<Boolean>
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        var email by remember { mutableStateOf("") }
 
+
+        val disaplyName = remember { mutableStateOf("") }
+
+
+        Text(
+            text = if (TextSwitch) "Welcome" else "Welcome Back",
+            color = Blue,
+            fontSize = 50.sp,
+            fontWeight = FontWeight.ExtraBold
+        )
+
+
+        OutlinedTextField(
+            value = disaplyName.value,
+            onValueChange = { disaplyName.value = it },
+            placeholder = {
+                Text("Enter Name...")
+            },
+            label = {
+                Text(
+                    text = "Name"
+                )
+            },
+            shape = RoundedCornerShape(20.dp),
+            maxLines = 1,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email
+            ),
+        )
+        Spacer(Modifier.padding(10.dp))
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            placeholder = {
+                Text("Enter Email...")
+            },
+            label = {
+                Text(
+                    text = "Email"
+                )
+            },
+            shape = RoundedCornerShape(20.dp),
+            maxLines = 1,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email
+            ),
+        )
+        Spacer(Modifier.padding(10.dp))
+        var passward by remember { mutableStateOf("") }
+
+        var passwardVisibility = remember { mutableStateOf<Boolean>(false) }
+
+        OutlinedTextField(
+            value = passward,
+            onValueChange = { passward = it },
+            placeholder = {
+                Text("Enter Passward...")
+            },
+            label = {
+                Text("Passward")
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Password
+            ),
+            trailingIcon = {
+                if (passwardVisibility.value) {
+                    Icon(
+                        painter = painterResource(R.drawable.outline_visibility_off_24),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickable {
+                                passwardVisibility.value = false
+                            }
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(R.drawable.outline_visibility_24),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickable {
+                                passwardVisibility.value = true
+                            }
+                    )
+                }
+            },
+            visualTransformation = if (passwardVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
+            shape = RoundedCornerShape(20.dp)
+
+        )
+
+        val reEnterPassward = remember { mutableStateOf("") }
+
+
+        val rePassErrorState = remember { mutableStateOf(false) }
+        Spacer(Modifier.padding(10.dp))
+
+
+
+        Spacer(
+            modifier = Modifier
+                .padding(10.dp)
+        )
+        Row {
+            Text(
+                text = "Already Have an Account? ",
+                fontSize = 17.sp
+            )
+            Text(
+                text = "Sign In",
+                fontSize = 17.sp,
+                color = Blue,
+                modifier = Modifier
+                    .clickable{
+                        siginInButtonState.value = !siginInButtonState.value
+                    }
+
+            )
+        }
+        val conedt = LocalContext.current
+
+        Spacer(Modifier.padding(20.dp))
+        OutlinedButton(
+            onClick = {
+                // TODO viewModel implementation and login
+
+
+                rePassErrorState.value = true
+                viewModel?.createUserEmailAndPassward(
+                    email,
+                    passward,
+                    displayName = disaplyName.value
+                )
+                navBackStack.add(Routes.HomeScreen)
+                Toast.makeText(conedt, "Done", Toast.LENGTH_SHORT).show()
+
+                rePassErrorState.value = false
+                Toast.makeText(conedt, "Failed", Toast.LENGTH_SHORT).show()
+
+            },
+            border = BorderStroke(4.dp, color = Blue),
+            modifier = Modifier
+                .width(200.dp)
+        ) {
+            Text("Create Account", fontSize = 20.sp)
+
+        }
+    }
+}
 
