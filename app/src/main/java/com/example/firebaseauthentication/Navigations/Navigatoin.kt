@@ -9,7 +9,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.firebaseauthentication.AuthViewModel
 import com.example.firebaseauthentication.Screens.HomeScreen
-import com.example.firebaseauthentication.Screens.LoginScreen
+import com.example.firebaseauthentication.Screens.EmaiLAndPassward
 import com.example.firebaseauthentication.Screens.SplashScreen
 
 @Composable
@@ -25,7 +25,7 @@ fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel) {
         entryProvider = entryProvider {
 
             entry<Routes.LoginScreen> {
-                LoginScreen(authViewModel,navBackStack)
+                EmaiLAndPassward(authViewModel,navBackStack)
             }
 
             entry<Routes.SplashScreen> {

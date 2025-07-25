@@ -6,34 +6,49 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.userProfileChangeRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class AuthViewModel(): ViewModel(){
+class AuthViewModel() : ViewModel() {
 
     val auth = FirebaseAuth.getInstance()
 
-    val isSucess = MutableStateFlow<Boolean>(false)
+    val isSucessCreateUserWithEmailPass = MutableStateFlow<Boolean>(false)
 
-    val checkUser = MutableStateFlow<FirebaseUser?>(null)
+    val createAccUser = MutableStateFlow<FirebaseUser?>(null)
 
-    fun createUserEmailAndPassward(email: String,passward: String,displayName: String){
-        auth.createUserWithEmailAndPassword(email,passward)
-            .addOnCompleteListener {task ->
+    val isSucessSiginUserWithEmailAndPass = MutableStateFlow<Boolean>(false)
 
-                if (task.isSuccessful){
-                    checkUser.value = auth.currentUser
-//                    val user = auth.currentUser
+    val signInUser = MutableStateFlow<FirebaseUser?>(null)
 
-                    isSucess.value = true
+
+    fun createUserEmailAndPassward(email: String, passward: String, displayName: String) {
+        auth.createUserWithEmailAndPassword(email, passward)
+            .addOnCompleteListener { task ->
+
+                if (task.isSuccessful) {
+                    createAccUser.value = auth.currentUser
+
+                    isSucessCreateUserWithEmailPass.value = true
                     val profileUpdates = userProfileChangeRequest {
                         this.displayName = displayName
                     }
 
-                    checkUser.value?.updateProfile(profileUpdates)
+                    createAccUser.value?.updateProfile(profileUpdates)
 
-                }
-                else{
-                    isSucess.value = false
+                } else {
+                    isSucessCreateUserWithEmailPass.value = false
                 }
             }
     }
 
+    fun siginInEmailAndPassward(email: String, passward: String) {
+        auth.signInWithEmailAndPassword(email, passward)
+            .addOnCompleteListener { task ->
+
+                if (task.isSuccessful) {
+                    signInUser.value = auth.currentUser
+                    isSucessSiginUserWithEmailAndPass.value = true
+                } else {
+                    isSucessSiginUserWithEmailAndPass.value = false
+                }
+            }
+    }
 }
