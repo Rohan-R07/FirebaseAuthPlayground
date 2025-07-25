@@ -33,7 +33,7 @@ fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel) {
             }
 
             entry<Routes.HomeScreen> {
-                HomeScreen(viewModel = authViewModel)
+                HomeScreen(viewModel = authViewModel,navBackStack)
             }
 
         }
