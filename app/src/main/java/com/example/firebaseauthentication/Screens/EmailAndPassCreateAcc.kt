@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -24,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +52,10 @@ import com.example.firebaseauthentication.R
 
 @Composable
 fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
+
+    val anonomousLogin = viewModel?.anonomousLogin?.collectAsState()
+
+
 
     Scaffold(
         modifier = Modifier
@@ -78,8 +84,10 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                             siginInButtonState = signInButton
                         )
                     } else {
-                        SignInEmailPass(        viewModel, navBackStack, swtich,
-                            siginInButtonState = signInButton)
+                        SignInEmailPass(
+                            viewModel, navBackStack, swtich,
+                            siginInButtonState = signInButton
+                        )
                     }
                 }
             )
@@ -258,6 +266,23 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                 }
             }
 
+            Button(
+                onClick = {
+                    viewModel?.loginAsGuste()
+                    navBackStack.removeAll { true }
+                    navBackStack.add(Routes.HomeScreen)
+                },
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(),
+            ) {
+                Text(
+                    "Continue As Guest",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
+
         }
     }
 }
@@ -392,10 +417,9 @@ fun CreateAccountEANDP(
                 fontSize = 17.sp,
                 color = Blue,
                 modifier = Modifier
-                    .clickable{
+                    .clickable {
                         siginInButtonState.value = !siginInButtonState.value
                     }
-
             )
         }
         val conedt = LocalContext.current
@@ -412,11 +436,16 @@ fun CreateAccountEANDP(
                     passward,
                     displayName = disaplyName.value
                 )
-                navBackStack.add(Routes.HomeScreen)
-                Toast.makeText(conedt, "Done", Toast.LENGTH_SHORT).show()
 
-                rePassErrorState.value = false
-                Toast.makeText(conedt, "Failed", Toast.LENGTH_SHORT).show()
+                if (viewModel?.isSucessCreateUserWithEmailPass?.value == true) {
+                    navBackStack.add(Routes.HomeScreen)
+                    Toast.makeText(conedt, "Done", Toast.LENGTH_SHORT).show()
+
+                } else if (viewModel?.isSucessCreateUserWithEmailPass?.value == false) {
+                    Toast.makeText(conedt, "Failed", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(conedt, "Try Again", Toast.LENGTH_LONG).show()
+                }
 
             },
             border = BorderStroke(4.dp, color = Blue),
