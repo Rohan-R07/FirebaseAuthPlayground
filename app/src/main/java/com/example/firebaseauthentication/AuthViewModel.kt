@@ -1,5 +1,8 @@
 package com.example.firebaseauthentication
 
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -10,7 +13,7 @@ class AuthViewModel() : ViewModel() {
 
     val auth = FirebaseAuth.getInstance()
 
-    val isSucessCreateUserWithEmailPass = MutableStateFlow<Boolean>(false)
+    val isSucessCreateUserWithEmailPass = MutableStateFlow<Boolean?>(true)
 
     val createAccUser = MutableStateFlow<FirebaseUser?>(null)
 
@@ -18,11 +21,13 @@ class AuthViewModel() : ViewModel() {
 
     val signInUser = MutableStateFlow<FirebaseUser?>(null)
 
+    val anonomousLogin = MutableStateFlow<Boolean>(false)
+
 
     fun createUserEmailAndPassward(email: String, passward: String, displayName: String) {
         auth.createUserWithEmailAndPassword(email, passward)
             .addOnCompleteListener { task ->
-
+                Log.d("FireBasing",isSucessCreateUserWithEmailPass.value.toString())
                 if (task.isSuccessful) {
                     createAccUser.value = auth.currentUser
 
@@ -37,6 +42,9 @@ class AuthViewModel() : ViewModel() {
                     isSucessCreateUserWithEmailPass.value = false
                 }
             }
+            .addOnFailureListener { failed ->
+                Log.d("FirebasingError","Error occured while loggin in")
+            }
     }
 
     fun siginInEmailAndPassward(email: String, passward: String) {
@@ -49,6 +57,20 @@ class AuthViewModel() : ViewModel() {
                 } else {
                     isSucessSiginUserWithEmailAndPass.value = false
                 }
+            }
+    }
+
+    fun loginAsGuste(){
+        anonomousLogin.value = false
+
+        auth.signInAnonymously()
+            .addOnCompleteListener { task ->
+                if(task.isSuccessful){
+                    anonomousLogin.value = true
+                }else{
+                    anonomousLogin.value = false
+                }
+
             }
     }
 }
