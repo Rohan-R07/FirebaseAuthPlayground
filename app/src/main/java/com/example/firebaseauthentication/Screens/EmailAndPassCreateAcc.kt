@@ -1,6 +1,7 @@
 package com.example.firebaseauthentication.Screens
 
 import android.widget.Toast
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -48,14 +49,13 @@ import androidx.navigation3.runtime.NavBackStack
 import com.example.firebaseauthentication.AuthViewModel
 import com.example.firebaseauthentication.Navigations.Routes
 import com.example.firebaseauthentication.R
+import com.example.firebaseauthentication.Utils.PhoneLogin
 
 
 @Composable
 fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 
     val anonomousLogin = viewModel?.anonomousLogin?.collectAsState()
-
-
 
     Scaffold(
         modifier = Modifier
@@ -72,6 +72,8 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 
             var signInButton = remember { mutableStateOf(true) }
 
+            var loginPhoneNO = remember { mutableStateOf(false) }
+
             AnimatedContent(
                 targetState = signInButton.value,
                 modifier = Modifier
@@ -84,7 +86,7 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                             siginInButtonState = signInButton
                         )
                     } else {
-                        SignInEmailPass(
+                        SignInwithEmailAndPasward(
                             viewModel, navBackStack, swtich,
                             siginInButtonState = signInButton
                         )
@@ -305,6 +307,7 @@ fun CreateAccountEANDP(
         val disaplyName = remember { mutableStateOf("") }
 
 
+
         Text(
             text = if (TextSwitch) "Welcome" else "Welcome Back",
             color = Blue,
@@ -395,9 +398,6 @@ fun CreateAccountEANDP(
 
         )
 
-        val reEnterPassward = remember { mutableStateOf("") }
-
-
         val rePassErrorState = remember { mutableStateOf(false) }
         Spacer(Modifier.padding(10.dp))
 
@@ -422,14 +422,12 @@ fun CreateAccountEANDP(
                     }
             )
         }
+        PhoneLogin(viewModel)
         val conedt = LocalContext.current
 
         Spacer(Modifier.padding(20.dp))
         OutlinedButton(
             onClick = {
-                // TODO viewModel implementation and login
-
-
                 rePassErrorState.value = true
                 viewModel?.createUserEmailAndPassward(
                     email,
