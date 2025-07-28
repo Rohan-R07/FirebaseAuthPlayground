@@ -41,7 +41,7 @@ import com.example.firebaseauthentication.Navigations.Routes
 import com.example.firebaseauthentication.R
 
 @Composable
-fun SignInEmailPass(
+fun SignInwithEmailAndPasward(
     viewModel: AuthViewModel?,
     navBackStack: NavBackStack,
     TextSwitch: Boolean,

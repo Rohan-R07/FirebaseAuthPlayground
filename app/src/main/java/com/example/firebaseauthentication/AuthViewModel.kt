@@ -1,13 +1,19 @@
 package com.example.firebaseauthentication
 
+import android.app.Activity
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.userProfileChangeRequest
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.concurrent.TimeUnit
 
 class AuthViewModel() : ViewModel() {
 
@@ -27,7 +33,7 @@ class AuthViewModel() : ViewModel() {
     fun createUserEmailAndPassward(email: String, passward: String, displayName: String) {
         auth.createUserWithEmailAndPassword(email, passward)
             .addOnCompleteListener { task ->
-                Log.d("FireBasing",isSucessCreateUserWithEmailPass.value.toString())
+                Log.d("FireBasing", isSucessCreateUserWithEmailPass.value.toString())
                 if (task.isSuccessful) {
                     createAccUser.value = auth.currentUser
 
@@ -43,7 +49,7 @@ class AuthViewModel() : ViewModel() {
                 }
             }
             .addOnFailureListener { failed ->
-                Log.d("FirebasingError","Error occured while loggin in")
+                Log.d("FirebasingError", "Error occured while loggin in")
             }
     }
 
@@ -60,17 +66,97 @@ class AuthViewModel() : ViewModel() {
             }
     }
 
-    fun loginAsGuste(){
+    fun loginAsGuste() {
         anonomousLogin.value = false
 
         auth.signInAnonymously()
             .addOnCompleteListener { task ->
-                if(task.isSuccessful){
+                if (task.isSuccessful) {
                     anonomousLogin.value = true
-                }else{
+                } else {
                     anonomousLogin.value = false
                 }
 
             }
     }
+
+    val loginSucess = MutableStateFlow<Boolean?>(false)
+    val verificationId = MutableStateFlow<String>("")
+    val recivedOtp = MutableStateFlow<Boolean>(false)
+
+    fun sendVerificationCode(
+        activity: Activity,
+        phoneNO: String,
+        displayName: MutableState<String>
+    ) {
+
+        val userProfile = FirebaseAuth.getInstance().currentUser
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(displayName.value)
+            .build()
+
+        userProfile?.updateProfile(profileUpdates)
+            ?.addOnCompleteListener { tasl ->
+                if (tasl.isSuccessful) {
+                    Log.d("Update Phone NO DisplayName", "Updated The Display Name Suxessfully")
+                } else {
+                    Log.d("Update Phone NO DisplayName", "Updation of the name Failed")
+                }
+
+            }
+        val option = PhoneAuthOptions.newBuilder(auth)
+            .setPhoneNumber("+91$phoneNO")
+            .setTimeout(110L, TimeUnit.SECONDS)
+            .setActivity(activity)
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    credintialLogin(credential)
+                    Log.d("PhoneAuth", "Compleated")
+
+                }
+
+                override fun onVerificationFailed(phoneAuthError: FirebaseException) {
+                    Log.d("PhoneAuth", phoneAuthError.message.toString())
+                    Log.d("PhoneAuth", phoneAuthError.cause.toString())
+                }
+
+                override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
+                    verificationId.value = p0
+                    recivedOtp.value = true
+                }
+            }
+            )
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(option)
+
+
+    }
+
+    fun verifyCode(otp: MutableState<String>) {
+        val credintial = PhoneAuthProvider.getCredential(
+            verificationId.value, otp.value
+        )
+        credintialLogin(credintial)
+    }
+
+    private fun credintialLogin(credential: PhoneAuthCredential) {
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    loginSucess.value = task.isSuccessful
+                    Log.d(
+                        "FirebasePhoneAuth",
+                        "Login Success: ${auth.currentUser?.phoneNumber}"
+                    )
+                } else {
+                    Log.e(
+                        "FirebasePhoneAuth",
+                        "Login Failed: ${task.exception?.message}"
+                    )
+                }
+            }
+
+
+    }
+
 }
