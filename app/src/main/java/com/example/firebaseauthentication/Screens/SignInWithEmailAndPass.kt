@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -22,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,13 +42,15 @@ import androidx.navigation3.runtime.NavBackStack
 import com.example.firebaseauthentication.AuthViewModel
 import com.example.firebaseauthentication.Navigations.Routes
 import com.example.firebaseauthentication.R
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInwithEmailAndPasward(
     viewModel: AuthViewModel?,
     navBackStack: NavBackStack,
     TextSwitch: Boolean,
-    siginInButtonState: MutableState<Boolean>
+    siginInButtonState: MutableState<Boolean>,
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -53,7 +58,7 @@ fun SignInwithEmailAndPasward(
     ) {
         var email by remember { mutableStateOf("") }
 
-
+        val courutineScope = rememberCoroutineScope()
         val disaplyName = remember { mutableStateOf("") }
 
 
@@ -158,6 +163,31 @@ fun SignInwithEmailAndPasward(
 
             )
         }
+        Spacer(
+            modifier = Modifier
+
+                .padding(10.dp)
+        )
+        Row {
+            Text(
+                text = "Want to login via", fontSize = 17.sp
+            )
+            Text(
+                text = "Phone No",
+                fontSize = 17.sp,
+                color = Blue,
+                modifier = Modifier.clickable {
+                    courutineScope.launch {
+//                        if (bottomSheetState.bottomSheetState.isVisible) {
+//                            bottomSheetState.bottomSheetState.hide()
+//                        } else {
+//
+//                            bottomSheetState.bottomSheetState.expand()
+//                        }
+                    }
+                }
+            )
+        }
         val conedt = LocalContext.current
 
         Spacer(Modifier.padding(20.dp))
@@ -167,13 +197,14 @@ fun SignInwithEmailAndPasward(
             onClick = {
 
                 viewModel?.siginInEmailAndPassward(email, passward)
-                Log.d("Firebaseing",isSuces?.value.toString())
+                Log.d("Firebaseing", isSuces?.value.toString())
                 if (isSuces?.value == false) {
-
+                    navBackStack.removeAll{true }
                     navBackStack.add(Routes.HomeScreen)
                     Toast.makeText(conedt, "Sign in Completed", Toast.LENGTH_SHORT).show()
                 } else if (isSuces?.value == true) {
-                    Toast.makeText(conedt, "Check you email And passward", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(conedt, "Check you email And passward", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
             },

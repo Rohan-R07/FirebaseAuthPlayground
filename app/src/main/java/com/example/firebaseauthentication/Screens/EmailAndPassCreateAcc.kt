@@ -1,7 +1,6 @@
 package com.example.firebaseauthentication.Screens
 
 import android.widget.Toast
-import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -18,18 +17,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,13 +52,20 @@ import androidx.navigation3.runtime.NavBackStack
 import com.example.firebaseauthentication.AuthViewModel
 import com.example.firebaseauthentication.Navigations.Routes
 import com.example.firebaseauthentication.R
-import com.example.firebaseauthentication.Utils.PhoneLogin
+import com.example.firebaseauthentication.Utils.FPhoneLogin
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 
-    val anonomousLogin = viewModel?.anonomousLogin?.collectAsState()
+//    val anonomousLogin = viewModel?.anonomousLogin?.collectAsState()
+
+    val bottomSheetState = remember { mutableStateOf(false) }
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true, // Optional: prevents half-expanded state
+    )
 
     Scaffold(
         modifier = Modifier
@@ -74,6 +84,7 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 
             var loginPhoneNO = remember { mutableStateOf(false) }
 
+
             AnimatedContent(
                 targetState = signInButton.value,
                 modifier = Modifier
@@ -83,12 +94,14 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                     if (swtich) {
                         CreateAccountEANDP(
                             viewModel, navBackStack, swtich,
-                            siginInButtonState = signInButton
+                            siginInButtonState = signInButton,
+                            bottomSheetState,
+                            sheetState
                         )
                     } else {
                         SignInwithEmailAndPasward(
                             viewModel, navBackStack, swtich,
-                            siginInButtonState = signInButton
+                            siginInButtonState = signInButton,
                         )
                     }
                 }
@@ -290,12 +303,15 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAccountEANDP(
     viewModel: AuthViewModel?,
     navBackStack: NavBackStack,
     TextSwitch: Boolean,
-    siginInButtonState: MutableState<Boolean>
+    siginInButtonState: MutableState<Boolean>,
+    bottomSheetState: MutableState<Boolean>,
+    sheetState: SheetState
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -306,7 +322,35 @@ fun CreateAccountEANDP(
 
         val disaplyName = remember { mutableStateOf("") }
 
+        val courutineScope = rememberCoroutineScope()
 
+        if (bottomSheetState.value) {
+            ModalBottomSheet(
+                onDismissRequest = { bottomSheetState.value = false },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                sheetState = sheetState,
+
+                ) {
+                Spacer(
+                    modifier = Modifier
+                        .padding(20.dp)
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    FPhoneLogin(viewModel, navBackStack)
+                }
+                Spacer(
+                    modifier = Modifier
+                        .padding(10.dp)
+                )
+            }
+        }
 
         Text(
             text = if (TextSwitch) "Welcome" else "Welcome Back",
@@ -422,7 +466,27 @@ fun CreateAccountEANDP(
                     }
             )
         }
-        PhoneLogin(viewModel)
+
+        Spacer(
+            modifier = Modifier
+
+                .padding(10.dp)
+        )
+        Row {
+            Text(
+                text = "Want to login via", fontSize = 17.sp
+            )
+            Text(
+                text = "Phone No",
+                fontSize = 17.sp,
+                color = Blue,
+                modifier = Modifier.clickable {
+                    bottomSheetState.value = !bottomSheetState.value
+                }
+            )
+        }
+        Spacer(Modifier.padding(10.dp))
+
         val conedt = LocalContext.current
 
         Spacer(Modifier.padding(20.dp))
@@ -436,6 +500,7 @@ fun CreateAccountEANDP(
                 )
 
                 if (viewModel?.isSucessCreateUserWithEmailPass?.value == true) {
+                    navBackStack.removeAll { true }
                     navBackStack.add(Routes.HomeScreen)
                     Toast.makeText(conedt, "Done", Toast.LENGTH_SHORT).show()
 

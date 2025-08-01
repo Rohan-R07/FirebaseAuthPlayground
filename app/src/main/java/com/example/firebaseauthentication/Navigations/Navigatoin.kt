@@ -6,11 +6,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
+import com.example.firebaseauthentication.Screens.SplashingScreen
 import androidx.navigation3.ui.NavDisplay
 import com.example.firebaseauthentication.AuthViewModel
 import com.example.firebaseauthentication.Screens.HomeScreen
 import com.example.firebaseauthentication.Screens.EmaiLAndPassward
-import com.example.firebaseauthentication.Screens.SplashScreen
 
 @Composable
 fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel) {
@@ -28,14 +28,18 @@ fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel) {
                 EmaiLAndPassward(authViewModel,navBackStack)
             }
 
-            entry<Routes.SplashScreen> {
-                SplashScreen(viewModel = authViewModel, navBackStack = navBackStack)
-            }
 
             entry<Routes.HomeScreen> {
                 HomeScreen(viewModel = authViewModel,navBackStack)
             }
 
+//            entry<Routes.PhoneLoginScreen> {
+//                PhoneLogin(viewModel = authViewModel,navBackStack)
+//            }
+
+            entry<Routes.SplashScreen> {
+                SplashingScreen(viewModel = authViewModel,navBackStack= navBackStack)
+            }
         }
 
     )
