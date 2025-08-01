@@ -83,6 +83,7 @@ class AuthViewModel() : ViewModel() {
     val loginSucess = MutableStateFlow<Boolean?>(false)
     val verificationId = MutableStateFlow<String>("")
     val recivedOtp = MutableStateFlow<Boolean>(false)
+    val otpRecivingError = MutableStateFlow<Boolean>(false)
 
     fun sendVerificationCode(
         activity: Activity,
@@ -90,42 +91,42 @@ class AuthViewModel() : ViewModel() {
         displayName: MutableState<String>
     ) {
 
-        val userProfile = FirebaseAuth.getInstance().currentUser
-        val profileUpdates = UserProfileChangeRequest.Builder()
-            .setDisplayName(displayName.value)
-            .build()
+//        val userProfile = FirebaseAuth.getInstance().currentUser
+//        val profileUpdates = UserProfileChangeRequest.Builder()
+//            .setDisplayName(displayName.value)
+//            .build()
 
-        userProfile?.updateProfile(profileUpdates)
-            ?.addOnCompleteListener { tasl ->
-                if (tasl.isSuccessful) {
-                    Log.d("Update Phone NO DisplayName", "Updated The Display Name Suxessfully")
-                } else {
-                    Log.d("Update Phone NO DisplayName", "Updation of the name Failed")
-                }
+// 🔄 Fix: define option before using it
 
-            }
         val option = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber("+91$phoneNO")
             .setTimeout(110L, TimeUnit.SECONDS)
             .setActivity(activity)
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                    credintialLogin(credential)
-                    Log.d("PhoneAuth", "Compleated")
+                    // First sign in the user
+                    FirebaseAuth.getInstance().signInWithCredential(credential)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d("PhoneAuth", "User signed in successfully")
 
+
+                            } else {
+                                Log.d("PhoneAuth", "Sign-in failed: ${task.exception}")
+                            }
+                        }
                 }
 
                 override fun onVerificationFailed(phoneAuthError: FirebaseException) {
-                    Log.d("PhoneAuth", phoneAuthError.message.toString())
-                    Log.d("PhoneAuth", phoneAuthError.cause.toString())
+                    Log.d("PhoneAuth", "Verification failed: ${phoneAuthError.message}")
                 }
 
                 override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
                     verificationId.value = p0
                     recivedOtp.value = true
+                    otpRecivingError.value = true
                 }
-            }
-            )
+            })
             .build()
         PhoneAuthProvider.verifyPhoneNumber(option)
 
