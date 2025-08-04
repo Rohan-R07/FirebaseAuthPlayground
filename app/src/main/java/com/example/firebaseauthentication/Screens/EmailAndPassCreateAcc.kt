@@ -1,6 +1,15 @@
 package com.example.firebaseauthentication.Screens
 
+import android.app.Activity
+import android.os.Build
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -28,7 +37,9 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,24 +59,33 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.credentials.Credential
+import androidx.credentials.CredentialManager
 import androidx.navigation3.runtime.NavBackStack
 import com.example.firebaseauthentication.AuthViewModel
 import com.example.firebaseauthentication.Navigations.Routes
 import com.example.firebaseauthentication.R
 import com.example.firebaseauthentication.Utils.FPhoneLogin
+import com.google.android.gms.auth.api.identity.Identity
+import kotlinx.coroutines.delay
+import kotlin.math.log
+import androidx.credentials.PublicKeyCredential
 
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 
-//    val anonomousLogin = viewModel?.anonomousLogin?.collectAsState()
 
     val bottomSheetState = remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true, // Optional: prevents half-expanded state
     )
+
+    // google Sign In implementation
+    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier
@@ -79,6 +99,9 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+
+//            viewModel?.signInWithGoogle(context)
 
             var signInButton = remember { mutableStateOf(true) }
 
@@ -126,7 +149,7 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                         .width(140.dp)
                 )
             }
-
+            val googleLogin = remember { mutableStateOf(false) }
             // google and facebook
             Row(
                 modifier = Modifier
@@ -140,6 +163,7 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                         .width(120.dp)
                         .clickable {
                             // TODO social providers onClick
+                            viewModel?.signInWithGoogle()
                         },
                     shape = RoundedCornerShape(10.dp)
                 ) {
@@ -148,7 +172,9 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .padding(10.dp)
+
                     ) {
+
 
                         Icon(
                             painter = painterResource(R.drawable.google_logo),
@@ -164,9 +190,9 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                             text = "Google",
                             modifier = Modifier
                         )
-
                     }
                 }
+
 
                 Spacer(Modifier.padding(15.dp))
 

@@ -1,21 +1,40 @@
 package com.example.firebaseauthentication
 
 import android.app.Activity
+import android.content.Context
+import android.content.IntentSender
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.firebaseauthentication.Firebase.GoogleSignInClient
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.UserInfo
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.concurrent.TimeUnit
 
-class AuthViewModel() : ViewModel() {
+class AuthViewModel(private val context: Context) : ViewModel() {
 
     val auth = FirebaseAuth.getInstance()
 
@@ -138,6 +157,7 @@ class AuthViewModel() : ViewModel() {
             verificationId.value, otp.value
         )
         credintialLogin(credintial)
+
     }
 
     private fun credintialLogin(credential: PhoneAuthCredential) {
@@ -159,5 +179,16 @@ class AuthViewModel() : ViewModel() {
 
 
     }
+    // GOOGLE LOGIN CRED MANAGER
+    val googleSignInClient = GoogleSignInClient(context = context)
 
+    val isSignIn = MutableStateFlow(googleSignInClient.isSingedIn())
+
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    fun signInWithGoogle() {
+        viewModelScope.launch {
+            googleSignInClient.signIn()
+        }
+
+    }
 }
