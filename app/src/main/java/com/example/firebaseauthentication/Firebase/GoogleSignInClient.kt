@@ -11,6 +11,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingExcept
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
 
 class GoogleSignInClient(
@@ -22,11 +23,16 @@ class GoogleSignInClient(
 
     private val credentialManager = androidx.credentials.CredentialManager.create(context)
 
+    val isSuceessFullLogin = MutableStateFlow<Boolean>(false)
+
+
     fun isSingedIn(): Boolean {
         if (auth.currentUser != null) {
             return true
         } else return false
     }
+
+    var isSucessed = MutableStateFlow(false)
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     suspend fun signIn(): Boolean {
@@ -54,14 +60,16 @@ class GoogleSignInClient(
             try {
 
                 val tokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-
                 println(tag + "name: ${tokenCredential.displayName}")
                 println(tag + "email: ${tokenCredential.id}")
                 println(tag + "Picture: ${tokenCredential.profilePictureUri}")
 
+                isSuceessFullLogin.value = !isSuceessFullLogin.value
+
                 val authCredential = GoogleAuthProvider.getCredential(tokenCredential.idToken, null)
 
-                // sign in with google happends here
+
+
                 val authResult = auth.signInWithCredential(authCredential).await()
 
                 return authResult.user != null
@@ -73,6 +81,7 @@ class GoogleSignInClient(
             }
         } else {
             println(tag + "Credentail is not GoogleIdTokenCrednetial")
+            isSuceessFullLogin.value = !isSuceessFullLogin.value
 
             return false
         }

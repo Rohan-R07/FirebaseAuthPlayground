@@ -160,6 +160,8 @@ class AuthViewModel(private val context: Context) : ViewModel() {
 
     }
 
+
+
     private fun credintialLogin(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
@@ -167,7 +169,7 @@ class AuthViewModel(private val context: Context) : ViewModel() {
                     loginSucess.value = task.isSuccessful
                     Log.d(
                         "FirebasePhoneAuth",
-                        "Login Success: ${auth.currentUser?.phoneNumber}"
+                        "Login Success: ${auth.currentUser?.email}"
                     )
                 } else {
                     Log.e(
@@ -179,16 +181,25 @@ class AuthViewModel(private val context: Context) : ViewModel() {
 
 
     }
+
     // GOOGLE LOGIN CRED MANAGER
+
     val googleSignInClient = GoogleSignInClient(context = context)
 
-    val isSignIn = MutableStateFlow(googleSignInClient.isSingedIn())
+//    val isSucesses = MutableStateFlow<Boolean>(googleSignInClient.isSucessed.value)
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     fun signInWithGoogle() {
         viewModelScope.launch {
             googleSignInClient.signIn()
+//            Log.d("GoogleSignINClient:","From ViewModel" + isSucesses.value.toString())
         }
 
+    }
+
+    suspend fun firebaseReload(){
+
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.reload()?.await()
     }
 }
