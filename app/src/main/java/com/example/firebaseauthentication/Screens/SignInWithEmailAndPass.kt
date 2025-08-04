@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,6 +43,8 @@ import androidx.navigation3.runtime.NavBackStack
 import com.example.firebaseauthentication.AuthViewModel
 import com.example.firebaseauthentication.Navigations.Routes
 import com.example.firebaseauthentication.R
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +55,8 @@ fun SignInwithEmailAndPasward(
     TextSwitch: Boolean,
     siginInButtonState: MutableState<Boolean>,
 ) {
+
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -61,6 +66,7 @@ fun SignInwithEmailAndPasward(
         val courutineScope = rememberCoroutineScope()
         val disaplyName = remember { mutableStateOf("") }
 
+        val signInGoogleToggle = remember { mutableStateOf(false) }
 
         Text(
             text = "Welcome Back",
@@ -134,13 +140,6 @@ fun SignInwithEmailAndPasward(
 
         )
 
-        val reEnterPassward = remember { mutableStateOf("") }
-
-
-        val rePassErrorState = remember { mutableStateOf(false) }
-        Spacer(Modifier.padding(10.dp))
-
-
 
         Spacer(
             modifier = Modifier
@@ -169,35 +168,13 @@ fun SignInwithEmailAndPasward(
                 .padding(10.dp)
         )
 
-        Row {
-            Text(
-                text = "Want to login via", fontSize = 17.sp
-            )
-            Text(
-                text = "Phone No",
-                fontSize = 17.sp,
-                color = Blue,
-                modifier = Modifier.clickable {
-                    courutineScope.launch {
-//                        if (bottomSheetState.bottomSheetState.isVisible) {
-//                            bottomSheetState.bottomSheetState.hide()
-//                        } else {
-//
-//                            bottomSheetState.bottomSheetState.expand()
-//                        }
 
-                    }
-                }
-            )
-        }
-        val conedt = LocalContext.current
 
         Spacer(Modifier.padding(20.dp))
-        val isSuces = viewModel?.isSignIn?.collectAsState(false)
 
         OutlinedButton(
             onClick = {
-
+                siginInButtonState.value = true
             },
             border = BorderStroke(4.dp, color = Blue),
             modifier = Modifier
@@ -206,20 +183,13 @@ fun SignInwithEmailAndPasward(
             Text("Sign In", fontSize = 20.sp)
 
         }
-//
-//        if(){
-//            viewModel?.siginInEmailAndPassward(email, passward)
-//            Log.d("Firebaseing", isSuces?.value.toString())
-//            if (isSuces?.value == false) {
-//                Toast.makeText(conedt, "Check you email And passward", Toast.LENGTH_SHORT)
-//                    .show()
-//            } else if (isSuces?.value == true) {
-//                navBackStack.removeAll{true }
-//                navBackStack.add(Routes.HomeScreen)
-//                Log.d("GoogleSignINClient: ","not workin")
-//                Toast.makeText(conedt, "Sign in Completed", Toast.LENGTH_SHORT).show()
-//            }
-//
-//        }
+
+        if (siginInButtonState.value) {
+            viewModel?.siginInEmailAndPassward(email, passward)
+            siginInButtonState.value = false
+            navBackStack.removeAll { true }
+            navBackStack.add(Routes.HomeScreen)
+        }
+
     }
 }

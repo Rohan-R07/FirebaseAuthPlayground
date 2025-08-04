@@ -70,6 +70,7 @@ import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.delay
 import kotlin.math.log
 import androidx.credentials.PublicKeyCredential
+import com.google.firebase.auth.FirebaseAuth
 
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -100,12 +101,8 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-
-//            viewModel?.signInWithGoogle(context)
-
             var signInButton = remember { mutableStateOf(true) }
 
-            var loginPhoneNO = remember { mutableStateOf(false) }
 
 
             AnimatedContent(
@@ -150,7 +147,13 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                 )
             }
             val googleLogin = remember { mutableStateOf(false) }
+
+
             // google and facebook
+
+            val isGoogleLoginSucessfull =
+                viewModel?.googleSignInClient?.isSuceessFullLogin?.collectAsState()
+            val toggle = remember { mutableStateOf(false) }
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -164,6 +167,8 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                         .clickable {
                             // TODO social providers onClick
                             viewModel?.signInWithGoogle()
+                            toggle.value = true
+
                         },
                     shape = RoundedCornerShape(10.dp)
                 ) {
@@ -193,6 +198,28 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                     }
                 }
 
+                if (toggle.value) {
+                    if (isGoogleLoginSucessfull?.value == true) {
+                        Log.d(
+                            "FirebaseLogin",
+                            "Sucessfully Authinticated " + isGoogleLoginSucessfull.value.toString()
+                        )
+                        navBackStack.removeAll { true }
+                        navBackStack.add(Routes.HomeScreen)
+                        toggle.value = false
+                    } else if (isGoogleLoginSucessfull?.value == false) {
+
+
+                        Log.d(
+                            "FirebaseLogin",
+                            "AuthinticatinoFailed" + isGoogleLoginSucessfull.value.toString()
+                        )
+                    } else {
+                        Log.d("nothing happending ", isGoogleLoginSucessfull?.value.toString())
+
+                    }
+
+                }
 
                 Spacer(Modifier.padding(15.dp))
 
@@ -323,6 +350,38 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                     fontWeight = FontWeight.ExtraBold
                 )
             }
+
+//            val isSucess = viewModel?.isSucesses?.collectAsState(false)
+            val context = LocalContext.current
+            val user = FirebaseAuth.getInstance().currentUser
+
+//            Log.d("GoogleSignINClient: ", isSucess?.value.toString())
+
+//            if (isSucess?.value == true) {
+//                LaunchedEffect(Unit) {
+//
+//                    user?.reload()
+//
+////                    Log.d("", isSucess?.value.toString())
+//                    if (isSucess?.value == true) {
+//                        Toast.makeText(context, "Check you email And passward", Toast.LENGTH_SHORT)
+//                            .show()
+//                    } else if (isSucess?.value == false) {
+//                        navBackStack.removeAll { true }
+//                        navBackStack.add(Routes.HomeScreen)
+//
+//                        Log.d("GoogleSignINClient: ", "not workin")
+//
+//
+//                        Toast.makeText(context, "Sign in Completed", Toast.LENGTH_SHORT).show()
+//                    } else {
+//                        Log.d("GoogleSignINClient: ", "not workin")
+//                        Toast.makeText(context, "Sign in Completed", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//
+//            }
+
 
         }
     }
@@ -515,7 +574,9 @@ fun CreateAccountEANDP(
 
         val conedt = LocalContext.current
 
+
         Spacer(Modifier.padding(20.dp))
+
         OutlinedButton(
             onClick = {
                 rePassErrorState.value = true
