@@ -72,4 +72,10 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation (libs.androidx.material) // or latest version
 
+    implementation (libs.play.services.auth)
+    implementation(libs.firebase.auth.ktx)
+
+    implementation(libs.androidx.credentials.v120alpha03) // or latest
+
+
 }

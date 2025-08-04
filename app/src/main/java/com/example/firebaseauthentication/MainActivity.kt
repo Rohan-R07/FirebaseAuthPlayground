@@ -12,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.example.firebaseauthentication.Navigations.Navigation
 import com.example.firebaseauthentication.Navigations.Routes
@@ -24,7 +26,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             FirebaseAuthenticationTheme {
 
-                val viewModels = viewModels<AuthViewModel>()
+                val viewModels = viewModels<AuthViewModel>(
+                    factoryProducer = {
+                        object  : ViewModelProvider.Factory {
+                            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                                return AuthViewModel(applicationContext) as T
+                            }
+                        }
+                    }
+
+                )
                 val backStack = rememberNavBackStack<Routes>(Routes.SplashScreen)
 
                 Navigation(backStack,viewModels.value)

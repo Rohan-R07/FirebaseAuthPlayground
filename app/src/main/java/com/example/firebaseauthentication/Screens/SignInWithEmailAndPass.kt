@@ -168,6 +168,7 @@ fun SignInwithEmailAndPasward(
 
                 .padding(10.dp)
         )
+
         Row {
             Text(
                 text = "Want to login via", fontSize = 17.sp
@@ -184,6 +185,7 @@ fun SignInwithEmailAndPasward(
 //
 //                            bottomSheetState.bottomSheetState.expand()
 //                        }
+
                     }
                 }
             )
@@ -191,21 +193,10 @@ fun SignInwithEmailAndPasward(
         val conedt = LocalContext.current
 
         Spacer(Modifier.padding(20.dp))
-        val isSuces = viewModel?.isSucessSiginUserWithEmailAndPass?.collectAsState(null)
+        val isSuces = viewModel?.isSignIn?.collectAsState(false)
 
         OutlinedButton(
             onClick = {
-
-                viewModel?.siginInEmailAndPassward(email, passward)
-                Log.d("Firebaseing", isSuces?.value.toString())
-                if (isSuces?.value == false) {
-                    navBackStack.removeAll{true }
-                    navBackStack.add(Routes.HomeScreen)
-                    Toast.makeText(conedt, "Sign in Completed", Toast.LENGTH_SHORT).show()
-                } else if (isSuces?.value == true) {
-                    Toast.makeText(conedt, "Check you email And passward", Toast.LENGTH_SHORT)
-                        .show()
-                }
 
             },
             border = BorderStroke(4.dp, color = Blue),
@@ -215,5 +206,20 @@ fun SignInwithEmailAndPasward(
             Text("Sign In", fontSize = 20.sp)
 
         }
+//
+//        if(){
+//            viewModel?.siginInEmailAndPassward(email, passward)
+//            Log.d("Firebaseing", isSuces?.value.toString())
+//            if (isSuces?.value == false) {
+//                Toast.makeText(conedt, "Check you email And passward", Toast.LENGTH_SHORT)
+//                    .show()
+//            } else if (isSuces?.value == true) {
+//                navBackStack.removeAll{true }
+//                navBackStack.add(Routes.HomeScreen)
+//                Log.d("GoogleSignINClient: ","not workin")
+//                Toast.makeText(conedt, "Sign in Completed", Toast.LENGTH_SHORT).show()
+//            }
+//
+//        }
     }
 }
