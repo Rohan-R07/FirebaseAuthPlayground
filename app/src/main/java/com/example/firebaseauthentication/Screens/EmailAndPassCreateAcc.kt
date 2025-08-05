@@ -351,36 +351,6 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                 )
             }
 
-//            val isSucess = viewModel?.isSucesses?.collectAsState(false)
-            val context = LocalContext.current
-            val user = FirebaseAuth.getInstance().currentUser
-
-//            Log.d("GoogleSignINClient: ", isSucess?.value.toString())
-
-//            if (isSucess?.value == true) {
-//                LaunchedEffect(Unit) {
-//
-//                    user?.reload()
-//
-////                    Log.d("", isSucess?.value.toString())
-//                    if (isSucess?.value == true) {
-//                        Toast.makeText(context, "Check you email And passward", Toast.LENGTH_SHORT)
-//                            .show()
-//                    } else if (isSucess?.value == false) {
-//                        navBackStack.removeAll { true }
-//                        navBackStack.add(Routes.HomeScreen)
-//
-//                        Log.d("GoogleSignINClient: ", "not workin")
-//
-//
-//                        Toast.makeText(context, "Sign in Completed", Toast.LENGTH_SHORT).show()
-//                    } else {
-//                        Log.d("GoogleSignINClient: ", "not workin")
-//                        Toast.makeText(context, "Sign in Completed", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//
-//            }
 
 
         }
