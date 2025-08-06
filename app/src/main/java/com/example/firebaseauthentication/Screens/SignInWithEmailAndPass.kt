@@ -63,11 +63,6 @@ fun SignInwithEmailAndPasward(
     ) {
         var email by remember { mutableStateOf("") }
 
-        val courutineScope = rememberCoroutineScope()
-        val disaplyName = remember { mutableStateOf("") }
-
-        val signInGoogleToggle = remember { mutableStateOf(false) }
-
         Text(
             text = "Welcome Back",
             color = Blue,

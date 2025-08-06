@@ -47,6 +47,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -70,6 +71,7 @@ import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.delay
 import kotlin.math.log
 import androidx.credentials.PublicKeyCredential
+import com.example.firebaseauthentication.Utils.LoginButtons
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -80,7 +82,7 @@ fun EmaiLAndPassward(
     viewModel: AuthViewModel?,
     navBackStack: NavBackStack,
     facebookLoginOnClick: @Composable () -> Unit,
-    githubLogin:@Composable () -> Unit
+    githubLogin: @Composable () -> Unit
 ) {
 
 
@@ -151,58 +153,35 @@ fun EmaiLAndPassward(
                         .width(140.dp)
                 )
             }
-            val googleLogin = remember { mutableStateOf(false) }
 
-
-            // google and facebook
-
-            val isGoogleLoginSucessfull =
-                viewModel?.googleSignInClient?.isSuceessFullLogin?.collectAsState()
-            val toggle = remember { mutableStateOf(false) }
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                    .fillMaxWidth()
+                    .padding(13.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Card(
-                    modifier = Modifier
-                        .width(120.dp)
-                        .clickable {
-                            // TODO social providers onClick
-                            viewModel?.signInWithGoogle()
-                            toggle.value = true
 
-                        },
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .padding(10.dp)
+                // google and facebook
 
-                    ) {
+                val isGoogleLoginSucessfull =
+                    viewModel?.googleSignInClient?.isSuceessFullLogin?.collectAsState()
+                val toggle = remember { mutableStateOf(false) }
 
+                // google Login
 
-                        Icon(
-                            painter = painterResource(R.drawable.google_logo),
-                            contentDescription = null,
-                            tint = Unspecified,
-                            modifier = Modifier
-                                .size(25.dp)
-                        )
-
-                        Spacer(Modifier.padding(5.dp))
-
-                        Text(
-                            text = "Google",
-                            modifier = Modifier
-                        )
-                    }
-                }
-
+                LoginButtons(
+                    onClick = {
+                        // TODO social providers onClick
+                        viewModel?.signInWithGoogle()
+                        toggle.value = true
+                    },
+                    image = R.drawable.google_logo,
+                    text = "Google",
+                    cardBackground = White,
+                    textColor = Black
+                )
                 if (toggle.value) {
                     if (isGoogleLoginSucessfull?.value == true) {
                         Log.d(
@@ -226,156 +205,71 @@ fun EmaiLAndPassward(
 
                 }
 
-                Spacer(Modifier.padding(15.dp))
+                Spacer(Modifier.padding(10.dp))
                 val facebookLoginToggle = remember { mutableStateOf(false) }
-                Card(
-                    modifier = Modifier
-                        .width(120.dp)
-                        .clickable {
-                            facebookLoginToggle.value = !facebookLoginToggle.value
 
-                        },
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .padding(10.dp)
-                    ) {
+                LoginButtons(
+                    onClick = {
+                        // TODO social providers onClick
+                        facebookLoginToggle.value = !facebookLoginToggle.value
 
-                        Icon(
-                            painter = painterResource(R.drawable.facebook_logo),
-                            contentDescription = null,
-                            tint = Unspecified,
-                            modifier = Modifier
-                                .size(25.dp)
-                        )
+                    },
+                    image = R.drawable.facebook_logo,
+                    text = "Facebook",
+                    cardBackground = Blue.copy(0.3f),
+                    textColor = White
+                )
 
-                        Spacer(Modifier.padding(5.dp))
-
-                        Text(
-                            text = "Facebook",
-                            modifier = Modifier
-                        )
-
-                    }
-                }
+                // Facebook Login
 
                 if (facebookLoginToggle.value) {
                     facebookLoginOnClick.invoke()
                     facebookLoginToggle.value = false
                 }
 
-            }
 
-            Spacer(Modifier.padding(10.dp))
-            // Github and microsoft
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
+
+                Spacer(Modifier.padding(10.dp))
+                // Github Login
                 val githubToggle = remember {
                     mutableStateOf(false)
                 }
-                Card(
-                    modifier = Modifier
-                        .width(120.dp)
-                        .clickable {
-                            // TODO social providers onClick
-                            githubToggle.value = !githubToggle.value
 
-                        },
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .padding(10.dp)
-                    ) {
+                LoginButtons(
+                    onClick = { githubToggle.value = !githubToggle.value },
+                    image = R.drawable.github_image,
+                    text = "GitHub",
+                    cardBackground = Black,
+                    textColor = White,
 
-                        Icon(
-                            painter = painterResource(R.drawable.github_image),
-                            contentDescription = null,
-                            tint = Unspecified,
-                            modifier = Modifier
-                                .size(25.dp)
-                        )
+                    )
 
-                        Spacer(Modifier.padding(5.dp))
-
-                        Text(
-                            text = "GitHub",
-                            modifier = Modifier
-                        )
-
-                    }
-                }
-                if (githubToggle.value){
+                if (githubToggle.value) {
                     githubLogin.invoke()
-                    Toast.makeText(context,"OWrking", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "OWrking", Toast.LENGTH_LONG).show()
                 }
                 Spacer(Modifier.padding(15.dp))
 
-
-                Card(
+                Button(
+                    onClick = {
+                        viewModel?.loginAsGuste()
+                        navBackStack.removeAll { true }
+                        navBackStack.add(Routes.HomeScreen)
+                    },
                     modifier = Modifier
-                        .width(120.dp)
-                        .clickable {
-                        },
-                    shape = RoundedCornerShape(10.dp)
+                        .padding(10.dp)
+                        .fillMaxWidth(),
                 ) {
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .padding(10.dp)
-                    ) {
-
-                        Icon(
-                            painter = painterResource(R.drawable.micorsoft),
-                            contentDescription = null,
-                            tint = Unspecified,
-                            modifier = Modifier
-                                .size(25.dp)
-                        )
-
-                        Spacer(Modifier.padding(5.dp))
-
-                        Text(
-                            text = "Microsoft",
-                            modifier = Modifier
-                        )
-
-                    }
+                    Text(
+                        "Continue As Guest",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
                 }
-
-
             }
-
-            Button(
-                onClick = {
-                    viewModel?.loginAsGuste()
-                    navBackStack.removeAll { true }
-                    navBackStack.add(Routes.HomeScreen)
-                },
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth(),
-            ) {
-                Text(
-                    "Continue As Guest",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.ExtraBold
-                )
-            }
-
-
         }
+
+
     }
 }
 
