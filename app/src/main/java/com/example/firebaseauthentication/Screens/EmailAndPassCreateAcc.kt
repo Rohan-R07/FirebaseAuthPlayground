@@ -76,7 +76,11 @@ import com.google.firebase.auth.FirebaseAuth
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
+fun EmaiLAndPassward(
+    viewModel: AuthViewModel?,
+    navBackStack: NavBackStack,
+    facebookLoginOnClick: @Composable () -> Unit
+) {
 
 
     val bottomSheetState = remember { mutableStateOf(false) }
@@ -222,12 +226,13 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                 }
 
                 Spacer(Modifier.padding(15.dp))
-
+                val facebookLoginToggle = remember { mutableStateOf(false) }
                 Card(
                     modifier = Modifier
                         .width(120.dp)
                         .clickable {
-                            // TODO social providers onClick
+                            facebookLoginToggle.value = !facebookLoginToggle.value
+
                         },
                     shape = RoundedCornerShape(10.dp)
                 ) {
@@ -255,6 +260,12 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 
                     }
                 }
+
+                if (facebookLoginToggle.value) {
+                    facebookLoginOnClick.invoke()
+                    facebookLoginToggle.value = false
+                }
+
             }
 
             Spacer(Modifier.padding(10.dp))
@@ -350,7 +361,6 @@ fun EmaiLAndPassward(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
                     fontWeight = FontWeight.ExtraBold
                 )
             }
-
 
 
         }

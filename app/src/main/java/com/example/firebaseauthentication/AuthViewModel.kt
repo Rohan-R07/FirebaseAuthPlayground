@@ -7,11 +7,15 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firebaseauthentication.Firebase.GoogleSignInClient
+import com.facebook.AccessToken
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -19,6 +23,8 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.FacebookAuthCredential
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -161,7 +167,6 @@ class AuthViewModel(private val context: Context) : ViewModel() {
     }
 
 
-
     private fun credintialLogin(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
@@ -197,9 +202,28 @@ class AuthViewModel(private val context: Context) : ViewModel() {
 
     }
 
-    suspend fun firebaseReload(){
+    val facebookAuthSuessfull = MutableStateFlow<Boolean>(false)
 
-        val user = FirebaseAuth.getInstance().currentUser
-        user?.reload()?.await()
+    fun loginWithFacebook(accessToken: AccessToken) {
+        val credential = FacebookAuthProvider.getCredential(accessToken.token)
+
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                    facebookAuthSuessfull.value = true
+                    Log.d("FirebaseAuth ", "completed Login")
+                } else {
+                    facebookAuthSuessfull.value = false
+                    Log.d("FirebaseAuth ", "Failed To facebook Login ")
+                }
+
+            }
+            .addOnFailureListener { fail ->
+                Log.d("FirebaseAuth ", fail.message.toString())
+
+            }
+
     }
+
 }

@@ -1,5 +1,7 @@
 package com.example.firebaseauthentication.Navigations
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,8 +14,9 @@ import com.example.firebaseauthentication.AuthViewModel
 import com.example.firebaseauthentication.Screens.HomeScreen
 import com.example.firebaseauthentication.Screens.EmaiLAndPassward
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel) {
+fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel, facebookLogin:@Composable () -> Unit) {
 
     NavDisplay(
         backStack = navBackStack,
@@ -25,7 +28,7 @@ fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel) {
         entryProvider = entryProvider {
 
             entry<Routes.LoginScreen> {
-                EmaiLAndPassward(authViewModel,navBackStack)
+                EmaiLAndPassward(authViewModel,navBackStack, facebookLoginOnClick = facebookLogin)
             }
 
 
@@ -33,9 +36,6 @@ fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel) {
                 HomeScreen(viewModel = authViewModel,navBackStack)
             }
 
-//            entry<Routes.PhoneLoginScreen> {
-//                PhoneLogin(viewModel = authViewModel,navBackStack)
-//            }
 
             entry<Routes.SplashScreen> {
                 SplashingScreen(viewModel = authViewModel,navBackStack= navBackStack)

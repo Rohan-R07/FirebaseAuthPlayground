@@ -184,12 +184,6 @@ fun SignInwithEmailAndPasward(
 
         }
 
-//        if (siginInButtonState.value) {
-//            viewModel?.siginInEmailAndPassward(email, passward)
-//            siginInButtonState.value = false
-//            navBackStack.removeAll { true }
-//            navBackStack.add(Routes.HomeScreen)
-//        }
 
     }
 }
