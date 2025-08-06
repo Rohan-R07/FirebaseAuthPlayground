@@ -16,7 +16,12 @@ import com.example.firebaseauthentication.Screens.EmaiLAndPassward
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
-fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel, facebookLogin:@Composable () -> Unit) {
+fun Navigation(
+    navBackStack: NavBackStack,
+    authViewModel: AuthViewModel,
+    facebookLogin: @Composable () -> Unit,
+    githubLogin:@Composable () -> Unit
+) {
 
     NavDisplay(
         backStack = navBackStack,
@@ -28,7 +33,10 @@ fun Navigation(navBackStack: NavBackStack, authViewModel: AuthViewModel, faceboo
         entryProvider = entryProvider {
 
             entry<Routes.LoginScreen> {
-                EmaiLAndPassward(authViewModel,navBackStack, facebookLoginOnClick = facebookLogin)
+                EmaiLAndPassward(
+                    authViewModel, navBackStack, facebookLoginOnClick = facebookLogin,
+                    githubLogin = githubLogin
+                )
             }
 
 
