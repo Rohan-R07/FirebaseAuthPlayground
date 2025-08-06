@@ -78,4 +78,9 @@ dependencies {
     implementation(libs.androidx.credentials.v120alpha03) // or latest
 
 
+    implementation(libs.google.firebase.auth)
+
+    implementation(libs.facebook.sdk)
+
+
 }
