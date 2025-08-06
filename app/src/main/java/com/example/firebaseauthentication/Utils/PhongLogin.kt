@@ -34,10 +34,6 @@ import com.example.firebaseauthentication.Navigations.Routes
 @Composable
 fun FPhoneLogin(viewModel: AuthViewModel?, navBackStack: NavBackStack) {
 
-    val otpVisibility = remember { mutableStateOf(false) }
-
-    val otpText = remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier
             .wrapContentSize(),
