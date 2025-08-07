@@ -61,11 +61,15 @@ Coming Soon — YouTube video or GIF
 
 ```
 📦 com.example.firebaseauthentication  
-┣ 📁 ui                # Compose Screens  
-┣ 📁 viewmodel         # MVVM ViewModels  
-┣ 📁 auth              # Auth logic (Google, GitHub, OTP etc.)  
+┣ 📁 Firebase          # GoogleSignInClient
+┣ 📁 Utlis             # OTPTextField, LoginButton, PhoneLogins etc
 ┣ 📁 navigation        # Compose Navigation  
-┗ 📜 MainActivity.kt   # App Entry Point  
+┣ 📁 Screens           # All types of screen used in this APK
+┣ 📜 AuthViewModel.kt  # ViewModel
+┣ 📁 MainActivity.kt   # Main File
+┗ 📁 MyApplication     # Application file to prevent UI Freezing 
+
+
 ```
 
 ---
