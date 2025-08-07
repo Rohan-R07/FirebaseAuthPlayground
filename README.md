@@ -36,52 +36,117 @@ A modern Android app that demonstrates various **Firebase Authentication** metho
 
 -> Create and Account with Email, Passward and DisplayName
 
+
+
+
+
 ![emailandpasswardCreateAc](https://github.com/user-attachments/assets/4667de0b-2dbf-47fb-8b79-d48e5f505218)
+
+
+
+
 
 
 -> Sign into an account with email and passward
 
 
+
+
+
+
+
 ![signInWithEmailAndPass](https://github.com/user-attachments/assets/1877d198-f44e-4aea-9667-860af07e6f74)
 
 
+
+
+
+
+
 -> Sign in with your google account
+
+
+
+
 
 
 ![signInWIthGoogle](https://github.com/user-attachments/assets/1b19927c-cde2-44cb-91a3-d954c6e34ad0)
 
 
 
+
+
+
+
 -> Sign in with facebook account 
+
+
+
+
 
 
 ![facebookLogin](https://github.com/user-attachments/assets/14ab85fd-a3f1-4449-aa41-041613f767af)
 
 
 
+
+
+
+
 -> Sign In with you GitHub Account
+
+
+
+
 
 
 ![githubLogin](https://github.com/user-attachments/assets/54bf4e0b-62a3-4663-ab22-e85a812462f1)
 
 
+
+
+
+
 -> Sign in with OTP/Phone Authintication
 
 
+
+
+
+
 ![signInWithOTP](https://github.com/user-attachments/assets/d51a73d8-162c-415c-ab3b-8c4992f237b2)
+
+
+
+
 
 
 -> SplashScreen of the Applicaion which checks if USer Logged in or not and Navigates to Login Screen if not
 
 
 
+
+
+
+
 ![splashScreen](https://github.com/user-attachments/assets/fc8de27e-950c-402b-9be9-6784ffb22aa6)
+
+
+
+
 
 
 -> If you dont want to give you Account or create one You can use Anonomous Login 
 
 
+
+
+
+
 ![anonomosly](https://github.com/user-attachments/assets/1e93b1cb-78b4-458a-b130-4225fe4da583)
+
+
+
 
 
 ---
