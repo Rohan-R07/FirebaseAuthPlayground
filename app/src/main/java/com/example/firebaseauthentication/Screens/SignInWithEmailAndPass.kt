@@ -169,7 +169,7 @@ fun SignInwithEmailAndPasward(
 
         OutlinedButton(
             onClick = {
-                siginInButtonState.value = true
+                viewModel?.siginInEmailAndPassward(email, passward)
             },
             border = BorderStroke(4.dp, color = Blue),
             modifier = Modifier
