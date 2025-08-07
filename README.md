@@ -36,118 +36,57 @@ A modern Android app that demonstrates various **Firebase Authentication** metho
 
 -> Create and Account with Email, Passward and DisplayName
 
-
-
-
+<br><Br><Br><br>
 
 ![emailandpasswardCreateAc](https://github.com/user-attachments/assets/4667de0b-2dbf-47fb-8b79-d48e5f505218)
 
-
-
-
-
+<br><Br><Br><br>
 
 -> Sign into an account with email and passward
 
-
-
-
-
-
+<br><Br><Br><br>
 
 ![signInWithEmailAndPass](https://github.com/user-attachments/assets/1877d198-f44e-4aea-9667-860af07e6f74)
 
-
-
-
-
-
+<br><Br><Br><br>
 
 -> Sign in with your google account
 
-
-
-
-
+<br><Br><Br><br>
 
 ![signInWIthGoogle](https://github.com/user-attachments/assets/1b19927c-cde2-44cb-91a3-d954c6e34ad0)
-
-
-
-
-
-
+<br><Br><Br><br>
 
 -> Sign in with facebook account 
-
-
-
-
-
-
+<br><Br><Br><br>
 ![facebookLogin](https://github.com/user-attachments/assets/14ab85fd-a3f1-4449-aa41-041613f767af)
 
-
-
-
-
-
-
+<br><Br><Br><br>
 -> Sign In with you GitHub Account
 
-
-
-
-
+<br><Br><Br><br>
 
 ![githubLogin](https://github.com/user-attachments/assets/54bf4e0b-62a3-4663-ab22-e85a812462f1)
-
-
-
-
-
-
+<br><Br><Br><br>
 -> Sign in with OTP/Phone Authintication
 
-
-
-
-
+<br><Br><Br><br>
 
 ![signInWithOTP](https://github.com/user-attachments/assets/d51a73d8-162c-415c-ab3b-8c4992f237b2)
 
-
-
-
-
+<br><Br><Br><br>
 
 -> SplashScreen of the Applicaion which checks if USer Logged in or not and Navigates to Login Screen if not
 
-
-
-
-
-
+<br><Br><Br><br>
 
 ![splashScreen](https://github.com/user-attachments/assets/fc8de27e-950c-402b-9be9-6784ffb22aa6)
 
-
-
-
-
-
+<br><Br><Br><br>
 -> If you dont want to give you Account or create one You can use Anonomous Login 
-
-
-
-
-
-
 ![anonomosly](https://github.com/user-attachments/assets/1e93b1cb-78b4-458a-b130-4225fe4da583)
 
-
-
-
+<br><Br><Br><br>
 
 ---
 
