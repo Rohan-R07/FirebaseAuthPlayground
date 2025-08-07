@@ -79,7 +79,8 @@ import com.google.firebase.auth.FirebaseAuth
 fun EmaiLAndPassward(
     viewModel: AuthViewModel?,
     navBackStack: NavBackStack,
-    facebookLoginOnClick: @Composable () -> Unit
+    facebookLoginOnClick: @Composable () -> Unit,
+    githubLogin:@Composable () -> Unit
 ) {
 
 
@@ -269,18 +270,23 @@ fun EmaiLAndPassward(
             }
 
             Spacer(Modifier.padding(10.dp))
-            // apple and microsoft
+            // Github and microsoft
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
+                val githubToggle = remember {
+                    mutableStateOf(false)
+                }
                 Card(
                     modifier = Modifier
                         .width(120.dp)
                         .clickable {
                             // TODO social providers onClick
+                            githubToggle.value = !githubToggle.value
+
                         },
                     shape = RoundedCornerShape(10.dp)
                 ) {
@@ -292,7 +298,7 @@ fun EmaiLAndPassward(
                     ) {
 
                         Icon(
-                            painter = painterResource(R.drawable.apple_logo),
+                            painter = painterResource(R.drawable.github_image),
                             contentDescription = null,
                             tint = Unspecified,
                             modifier = Modifier
@@ -302,23 +308,27 @@ fun EmaiLAndPassward(
                         Spacer(Modifier.padding(5.dp))
 
                         Text(
-                            text = "Apple",
+                            text = "GitHub",
                             modifier = Modifier
                         )
 
                     }
                 }
-
+                if (githubToggle.value){
+                    githubLogin.invoke()
+                    Toast.makeText(context,"OWrking", Toast.LENGTH_LONG).show()
+                }
                 Spacer(Modifier.padding(15.dp))
+
 
                 Card(
                     modifier = Modifier
                         .width(120.dp)
                         .clickable {
-                            // TODO social providers onClick
                         },
                     shape = RoundedCornerShape(10.dp)
                 ) {
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
@@ -343,6 +353,8 @@ fun EmaiLAndPassward(
 
                     }
                 }
+
+
             }
 
             Button(

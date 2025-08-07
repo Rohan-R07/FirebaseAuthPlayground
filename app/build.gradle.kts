@@ -82,5 +82,7 @@ dependencies {
 
     implementation(libs.facebook.sdk)
 
+    implementation(libs.androidx.browser)
+
 
 }

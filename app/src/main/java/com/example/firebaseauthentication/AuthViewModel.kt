@@ -27,7 +27,10 @@ import com.google.firebase.auth.FacebookAuthCredential
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GithubAuthCredential
+import com.google.firebase.auth.GithubAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
@@ -35,9 +38,13 @@ import com.google.firebase.auth.UserInfo
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 class AuthViewModel(private val context: Context) : ViewModel() {
@@ -226,4 +233,36 @@ class AuthViewModel(private val context: Context) : ViewModel() {
 
     }
 
+    val _status = MutableStateFlow<String>("")
+
+    val isSucessfullGitHubLogin = MutableStateFlow<Boolean>(false)
+    fun startGitHubLogin(activity: Activity) {
+        _status.value = "Starting GitHub sign-in..."
+
+        val provider = OAuthProvider.newBuilder("github.com")
+        val pending = auth.pendingAuthResult
+
+        if (pending != null) {
+            // Already in progress
+            pending.addOnSuccessListener {
+                _status.value = "Login success: ${it.user?.displayName}"
+                isSucessfullGitHubLogin.value = true
+            }.addOnFailureListener {
+                _status.value = "Login failed: ${it.message}"
+                isSucessfullGitHubLogin.value = false
+            }
+        } else {
+            auth.startActivityForSignInWithProvider(activity, provider.build())
+                .addOnSuccessListener {
+                    _status.value = "Login success: ${it.user?.displayName}"
+
+
+                }
+                .addOnFailureListener {
+                    _status.value = "Login failed: ${it.message}"
+
+
+                }
+        }
+    }
 }
