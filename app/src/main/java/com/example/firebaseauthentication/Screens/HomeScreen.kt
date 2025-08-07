@@ -55,6 +55,8 @@ fun HomeScreen(viewModel: AuthViewModel, navBackStack: NavBackStack) {
 
     val phoneNo = remember { mutableStateOf("") }
 
+    val pofilePicture = remember { mutableStateOf("") }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -72,7 +74,6 @@ fun HomeScreen(viewModel: AuthViewModel, navBackStack: NavBackStack) {
 
             val isAnonomou = MutableStateFlow<Boolean>(false)
 
-            val isPhonelogin = remember { mutableStateOf(false) }
 
             LaunchedEffect(Unit) {
                 onSucess.value = false
@@ -87,6 +88,7 @@ fun HomeScreen(viewModel: AuthViewModel, navBackStack: NavBackStack) {
                     email.value = viewModel.auth.currentUser?.email.toString()
                     displayName.value = viewModel.auth.currentUser?.displayName.toString()
                     phoneNo.value = viewModel.auth.currentUser?.phoneNumber.toString()
+                    pofilePicture.value = viewModel.auth.currentUser?.photoUrl.toString()
                     onSucess.value = true
                 }
 
@@ -99,9 +101,6 @@ fun HomeScreen(viewModel: AuthViewModel, navBackStack: NavBackStack) {
 
             if (onSucess.value) {
 
-                Log.d("roin", "name: " + displayName.value)
-                Log.d("roin", "phone NO: " + phoneNo.value)
-                Log.d("roin", "email: " + email.value)
                 when {
                     (email.value.toString() == "null" && displayName.value == "null" && phoneNo.value.toString() != "null") -> {
                         // TODO Phone Login
@@ -133,14 +132,28 @@ fun HomeScreen(viewModel: AuthViewModel, navBackStack: NavBackStack) {
                         ) {
                             Text("Log Out", fontSize = 12.sp)
                         }
+
+                        //deleting User
+
+                        Spacer(Modifier.padding(10.dp))
+                        Button(
+                            onClick = {
+                                viewModel.auth.signOut()
+                                navBackStack.removeAll { true }
+                                navBackStack.add(Routes.LoginScreen)
+                            }
+                        ) {
+                            Text("Delete User", fontSize = 12.sp)
+                        }
                     }
 
 
                     (email.value.toString() != "null" && displayName.value.toString() != "null" && phoneNo.value.toString() == "null")
                         -> {
                         // TODO Email and passward login /Sigin up
+
                         Text(
-                            text = "Logined via Email and Passward",
+                            text = "Logined via Email and Passward/Social providers",
                             fontSize = 30.sp,
                             textAlign = TextAlign.Center
                         )
@@ -168,18 +181,42 @@ fun HomeScreen(viewModel: AuthViewModel, navBackStack: NavBackStack) {
                         Spacer(Modifier.padding(10.dp))
                         Button(
                             onClick = {
+
+                                viewModel.auth.currentUser?.delete()
+                                    ?.addOnSuccessListener {
+
+
+                                        navBackStack.removeAll { true }
+                                        navBackStack.add(Routes.LoginScreen)
+                                    }
+                                    ?.addOnFailureListener {
+                                        Log.d(
+                                            "DeleteUserError",
+                                            "Error deleting user: ${it.message}"
+                                        )
+                                    }
+
+                            }
+                        ) {
+                            Text("Sign IN", fontSize = 12.sp)
+                        }
+
+                        //deleting User
+
+                        Spacer(Modifier.padding(10.dp))
+                        Button(
+                            onClick = {
                                 viewModel.auth.signOut()
                                 navBackStack.removeAll { true }
                                 navBackStack.add(Routes.LoginScreen)
                             }
                         ) {
-                            Text("Sign IN", fontSize = 12.sp)
+                            Text("Delete User", fontSize = 12.sp)
                         }
                     }
 
                     (email.value.toString() == "null" && displayName.value.toString() == "null" && phoneNo.value.toString() == "null")
                         -> {
-                        // TODO Email and passward login /Sigin up
                         Text(
                             text = "Welcome Guest",
                             fontSize = 40.sp,
