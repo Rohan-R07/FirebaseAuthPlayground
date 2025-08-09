@@ -57,7 +57,7 @@ A modern Android app that demonstrates various **Firebase Authentication** metho
 ![signInWIthGoogle](https://github.com/user-attachments/assets/1b19927c-cde2-44cb-91a3-d954c6e34ad0)
 <br><Br><Br><br>
 
--> Sign in with facebook account 
+-> Sign in with facebook account (since this is not an deployed application facebook dont allow for login and give error in their OAuth)
 <br><Br><Br><br>
 ![facebookLogin](https://github.com/user-attachments/assets/14ab85fd-a3f1-4449-aa41-041613f767af)
 
