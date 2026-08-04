@@ -1,3 +1,4 @@
+
 # 🔐 Firebase Authentication App – Jetpack Compose
 
 A modern Android app that demonstrates various **Firebase Authentication** methods using **Jetpack Compose**, **Navigation**, and **Clean Architecture**.
